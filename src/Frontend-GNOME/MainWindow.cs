@@ -69,6 +69,9 @@ namespace Smuxi.Frontend.Gnome
         private bool             _IsMaximized;
         private bool             _IsFullscreen;
 
+        Gtk.HBox MenuHBox { get; set; }
+        JoinWidget JoinWidget { get; set; }
+
         public Gtk.MenuBar MenuBar {
             get {
                 return _MenuBar;
@@ -302,8 +305,20 @@ namespace Smuxi.Frontend.Gnome
             
             _OpenChatMenuItem = new Gtk.ImageMenuItem(_("Open / Join Chat"));
             _OpenChatMenuItem.Image = new Gtk.Image(Gtk.Stock.Open, Gtk.IconSize.Menu);
-            _OpenChatMenuItem.Activated += OnChatOpenChatButtonClicked;
-            _OpenChatMenuItem.Sensitive = false;
+            //_OpenChatMenuItem.Activated += OnChatOpenChatButtonClicked;
+            _OpenChatMenuItem.Activated += delegate {
+                JoinWidget.HasFocus = true;
+            };
+            //_OpenChatMenuItem.Sensitive = false;
+            akey = new Gtk.AccelKey();
+            akey.AccelFlags = Gtk.AccelFlags.Visible;
+            akey.AccelMods = Gdk.ModifierType.ControlMask;
+            akey.Key = Gdk.Key.L;
+            _OpenChatMenuItem.AddAccelerator("activate", agrp, akey);
+            _OpenChatMenuItem.AccelCanActivate += delegate(object o, Gtk.AccelCanActivateArgs args) {
+                // allow the accelerator to be used even when the menu bar is hidden
+                args.RetVal = true;
+            };
             menu.Append(_OpenChatMenuItem);
                     
             _FindGroupChatMenuItem = new Gtk.ImageMenuItem(_("_Find Group Chat"));
@@ -472,6 +487,27 @@ namespace Smuxi.Frontend.Gnome
             };
             menu.Append(_ShowMenuBarItem);
 
+            JoinWidget = new JoinWidget();
+            JoinWidget.NoShowAll = true;
+            JoinWidget.Visible = (bool) Frontend.FrontendConfig["ShowEasyJoin"];
+            JoinWidget.Activated += delegate {
+                var chatLink = JoinWidget.GetChatLink();
+                Frontend.OpenChatLink(chatLink);
+                JoinWidget.Clear();
+            };
+            var joinItem = new Gtk.CheckMenuItem(_("Show _Easy Join"));
+            joinItem.Active = JoinWidget.Visible;
+            joinItem.Activated += delegate {
+                try {
+                    JoinWidget.Visible = !JoinWidget.Visible;
+                    Frontend.FrontendConfig["ShowEasyJoin"] = JoinWidget.Visible;
+                    Frontend.FrontendConfig.Save();
+                } catch (Exception ex) {
+                    Frontend.ShowException(this, ex);
+                }
+            };
+            menu.Append(joinItem);
+
             item = new Gtk.ImageMenuItem(Gtk.Stock.Fullscreen, agrp);
             item.Activated += delegate {
                 try {
@@ -561,8 +597,12 @@ namespace Smuxi.Frontend.Gnome
             _ProgressBar = new Gtk.ProgressBar();
             _ProgressBar.BarStyle = Gtk.ProgressBarStyle.Continuous;
 
+            MenuHBox = new Gtk.HBox();
+            MenuHBox.PackStart(_MenuBar, false, false, 0);
+            MenuHBox.PackEnd(JoinWidget, false, false, 0);
+
             Gtk.VBox vbox = new Gtk.VBox();
-            vbox.PackStart(_MenuBar, false, false, 0);
+            vbox.PackStart(MenuHBox, false, false, 0);
             vbox.PackStart(_Notebook, true, true, 0);
             vbox.PackStart(entryScrolledWindow, false, false, 0);
 
@@ -615,6 +655,7 @@ namespace Smuxi.Frontend.Gnome
             _Entry.ApplyConfig(userConfig);
             _Notebook.ApplyConfig(userConfig);
             _ChatViewManager.ApplyConfig(userConfig);
+            JoinWidget.ApplyConfig(userConfig);
         }
 
         public void UpdateTitle()
@@ -1066,7 +1107,7 @@ namespace Smuxi.Frontend.Gnome
                     return;
                 }
 
-                _OpenChatMenuItem.Sensitive = !(chatView is SessionChatView);
+                //_OpenChatMenuItem.Sensitive = !(chatView is SessionChatView);
                 _CloseChatMenuItem.Sensitive = !(chatView is SessionChatView);
                 _FindGroupChatMenuItem.Sensitive = !(chatView is SessionChatView);
                 if (Frontend.IsLocalEngine) {
