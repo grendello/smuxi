@@ -2907,21 +2907,18 @@ namespace Smuxi.Engine
             var builder = CreateMessageBuilder();
             builder.AppendEventPrefix();
             if (e.Data.Irc.IsMe(e.Whom)) {
-                // TRANSLATOR: do NOT change the position of {1}!
-                builder.AppendText(_("You were kicked from {0} by {1}"),
-                                   e.Channel, String.Empty);
-                builder.AppendIdendityName(GetPerson(chat, e.Who));
+                builder.Append(_("You were kicked from {0} by {1}"),
+                               e.Channel, GetPerson(chat, e.Who));
                 builder.AppendText(" [").AppendMessage(e.KickReason).AppendText("]");
                 Session.AddMessageToChat(chat, builder.ToMessage());
                 Session.DisableChat(chat);
             } else {
                 PersonModel user = chat.GetPerson(e.Whom);
                 Session.RemovePersonFromGroupChat(chat, user);
-                builder.AppendIdendityName(GetPerson(chat, e.Whom));
-                // TRANSLATOR: do NOT change the position of {0} and {2}!
-                builder.AppendText(_("{0} was kicked from {1} by {2}"),
-                                   String.Empty, e.Channel, String.Empty);
-                builder.AppendIdendityName(GetPerson(chat, e.Who));
+                builder.Append(_("{0} was kicked from {1} by {2}"),
+                               GetPerson(chat, e.Whom),
+                               e.Channel,
+                               GetPerson(chat, e.Who));
                 builder.AppendText(" [").AppendMessage(e.KickReason).AppendText("]");
                 Session.AddMessageToChat(chat, builder.ToMessage());
             }

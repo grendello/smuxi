@@ -89,6 +89,20 @@ namespace Smuxi.Engine
             return this;
         }
 
+        public virtual MessageBuilder Append(string text,
+                                             params object[] args)
+        {
+            text = text ?? String.Empty;
+            if (text.Length == 0) {
+                return this;
+            }
+
+            // scan for {[0-9]+} and replace with args
+            // ContactModel -> AppendIdentity()
+            // default -> AppendText()
+            return this;
+        }
+
         public virtual TextMessagePartModel CreateText(TextMessagePartModel text)
         {
             if (text == null) {
