@@ -13,3 +13,9 @@
 [submodule "lib/jabber-net"]
 	path = lib/jabber-net
 	url = git://git.qnetp.net/jabber-net.git
+[submodule "lib/SignalR"]
+	path = lib/SignalR
+	url = git://git.qnetp.net/SignalR.git
+[submodule "lib/JabbR.Client"]
+	path = lib/JabbR.Client
+	url = git://git.qnetp.net/JabbR.Client.git

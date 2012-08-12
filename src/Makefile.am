@@ -19,6 +19,10 @@ if ENABLE_ENGINE_TWITTER
 ENGINE_TWITTER = Engine-Twitter
 endif
 
+if ENABLE_ENGINE_JABBR
+ENGINE_JABBR = Engine-JabbR
+endif
+
 # Frontends
 if ENABLE_FRONTEND_GNOME
 FRONTEND_GNOME = Frontend-GNOME
@@ -55,6 +59,7 @@ endif
 SUBDIRS =	Common \
 		Engine \
 		$(ENGINE_IRC) \
+		$(ENGINE_JABBR) \
 		$(ENGINE_MSNP) \
 		$(ENGINE_OSCAR) \
 		$(ENGINE_TWITTER) \
