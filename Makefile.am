@@ -163,7 +163,8 @@ LINUX_STATIC_FILES = \
 dist-win32:
 	./autogen.sh --without-indicate --without-notify --without-dbus \
 	  --with-db4o=included \
-	  --with-vendor-package-version="dist-win32"
+	  --with-vendor-package-version="dist-win32" \
+	  --disable-engine-jabbr
 	$(MAKE)
 	mkdir -p $(WIN32_BUILD_DIR)
 	for FILE in $(WIN32_FILES); do \
@@ -177,7 +178,8 @@ dist-win32:
 dist-osx:
 	./autogen.sh --without-indicate --without-notify --without-dbus \
 	  --with-db4o=included \
-	  --with-vendor-package-version="dist-osx"
+	  --with-vendor-package-version="dist-osx" \
+	  --disable-engine-jabbr
 	$(MAKE)
 	mkdir -p $(OSX_BINARIES_DIR) $(OSX_RESOURCES_DIR)
 	cp $(OSX_LIB_DIR)/Info.plist $(OSX_CONTENTS_DIR)
