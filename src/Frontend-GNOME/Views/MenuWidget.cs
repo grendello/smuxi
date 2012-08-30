@@ -121,8 +121,15 @@ namespace Smuxi.Frontend.Gnome
             var desktop = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP");
             if (!String.IsNullOrEmpty(desktop) && desktop.ToLower().Contains("unity")) {
                 f_MenuBar.StyleSet += delegate(object o, Gtk.StyleSetArgs args) {
-                    var fg = f_MenuBar.Style.Foreground(Gtk.StateType.Normal);
                     var bg = f_MenuBar.Style.Background(Gtk.StateType.Normal);
+                    var fg = f_MenuBar.Style.Foreground(Gtk.StateType.Normal);
+#if LOG4NET
+                    f_Logger.DebugFormat(
+                        "f_MenuBar.StyleSet(): " +
+                        "activating primary toolbar hack for Unity, " +
+                        "menu bg: {0} fg: {1}", bg, fg
+                    );
+#endif
                     f_MenuToolbar.ModifyBg(Gtk.StateType.Normal, bg);
                     f_MenuToolbar.ModifyFg(Gtk.StateType.Normal, fg);
                     f_JoinToolbar.ModifyBg(Gtk.StateType.Normal, bg);
