@@ -86,6 +86,8 @@ namespace Smuxi.Frontend.Gnome
 
         public MenuWidget(Gtk.Window parent, ChatViewManager chatViewManager)
         {
+            Trace.Call(parent, ChatViewManager);
+
             if (parent == null) {
                 throw new ArgumentNullException("parent");
             }
@@ -136,6 +138,34 @@ namespace Smuxi.Frontend.Gnome
                     f_JoinToolbar.ModifyFg(Gtk.StateType.Normal, fg);
                 };
             }
+            f_MenuBar.StyleSet += delegate(object o, Gtk.StyleSetArgs args) {
+#if LOG4NET
+                    f_Logger.DebugFormat(
+                        "f_MenuBar.StyleSet()"
+                    );
+#endif
+            };
+            f_MenuBar.Realized += delegate(object sender, EventArgs e) {
+#if LOG4NET
+                    f_Logger.DebugFormat(
+                        "f_MenuBar.Realized()"
+                    );
+#endif
+            };
+            f_MenuToolbar.StyleSet += delegate(object o, Gtk.StyleSetArgs args) {
+#if LOG4NET
+                    f_Logger.DebugFormat(
+                        "f_MenuToolbar.StyleSet()"
+                    );
+#endif
+            };
+            f_MenuToolbar.Realized += delegate(object sender, EventArgs e) {
+#if LOG4NET
+                    f_Logger.DebugFormat(
+                        "f_MenuToolbar.Realized()"
+                    );
+#endif
+            };
             f_MenuBar.ShowAll();
             f_MenuBar.NoShowAll = true;
             f_MenuBar.Visible = (bool) Frontend.FrontendConfig["ShowMenuBar"];
