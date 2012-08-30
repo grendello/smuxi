@@ -116,6 +116,19 @@ namespace Smuxi.Frontend.Gnome
             // Toolbar
             f_FindGroupChatToolAction.IconName = Gtk.Stock.Find;
 
+            // HACK: fake GTK3's primary-toolbar style on Unity by copying the
+            // bg/fg from the menu
+            var desktop = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP");
+            if (!String.IsNullOrEmpty(desktop) && desktop.ToLower().Contains("unity")) {
+                f_MenuBar.StyleSet += delegate(object o, Gtk.StyleSetArgs args) {
+                    var fg = f_MenuBar.Style.Foreground(Gtk.StateType.Normal);
+                    var bg = f_MenuBar.Style.Background(Gtk.StateType.Normal);
+                    f_MenuToolbar.ModifyBg(Gtk.StateType.Normal, bg);
+                    f_MenuToolbar.ModifyFg(Gtk.StateType.Normal, fg);
+                    f_JoinToolbar.ModifyBg(Gtk.StateType.Normal, bg);
+                    f_JoinToolbar.ModifyFg(Gtk.StateType.Normal, fg);
+                };
+            }
             f_MenuBar.ShowAll();
             f_MenuBar.NoShowAll = true;
             f_MenuBar.Visible = (bool) Frontend.FrontendConfig["ShowMenuBar"];
